@@ -9,7 +9,12 @@ function Canvas() {
   const initializeCanvas = () => {
     if (!canvasRef.current) return;
     const gameCanvas = new GameCanvas(canvasRef.current);
-    const token1 = new DraggableToken();
+    const token1 = new DraggableToken({
+      x: 20,
+      y: 90,
+      color: "red",
+      teamId: 2,
+    });
     if (!gameCanvas.ctx) return;
     token1.drawToken(gameCanvas.ctx);
   };
