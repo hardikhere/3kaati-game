@@ -4,8 +4,9 @@ class DraggableToken {
   color: String;
   x: number;
   y: number;
-  radius = 50;
+  radius = 20;
   ctx: CanvasRenderingContext2D | null = null;
+  offset = { x: 0, y: 0 };
   active = false;
   selected = false;
   readonly id: number;
@@ -23,7 +24,6 @@ class DraggableToken {
   drawToken() {
     const { ctx } = this;
     if (!ctx) return;
-    console.log("here");
     ctx?.beginPath();
     ctx?.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     if (this.active) {

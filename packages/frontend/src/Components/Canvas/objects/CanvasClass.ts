@@ -1,6 +1,7 @@
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 import DraggableToken from "./DraggableObject";
 import Line from "./LineClass";
+import { getNearestDropableArea } from "./utils";
 
 class GameCanvas {
   ctx: CanvasRenderingContext2D | null = null;
@@ -97,7 +98,7 @@ class GameCanvas {
     const { canvas } = ctx;
 
     const tokens = this.getPlayerTokens();
-
+    let nearestDropPoint = { x: 0, y: 0 };
     canvas.addEventListener("mousemove", (e) => {
       let mouse = getMouseCoords(canvas, e);
 
@@ -108,9 +109,25 @@ class GameCanvas {
         }
 
         if (
-          cursorInRect(mouse.x, mouse.y, e.x, e.y, e.radius * 2, e.radius * 2)
+          cursorInRect(
+            mouse.x,
+            mouse.y,
+            e.x - e.radius,
+            e.y - e.radius,
+            e.radius * 2,
+            e.radius * 2
+          )
         ) {
           if (!e.active) e.activate();
+          if (!e.selected) return;
+          // look for dropable areas
+          const nearestPoint = getNearestDropableArea(
+            ctx.canvas.height,
+            ctx.canvas.width,
+            mouse
+          );
+          nearestDropPoint = nearestPoint;
+          // draw nearest point here
         } else {
           e.active = false;
         }
@@ -121,7 +138,14 @@ class GameCanvas {
       let mouse = getMouseCoords(canvas, e);
       tokens.forEach((e) => {
         if (
-          cursorInRect(mouse.x, mouse.y, e.x, e.y, e.radius * 2, e.radius * 2)
+          cursorInRect(
+            mouse.x,
+            mouse.y,
+            e.x - e.radius,
+            e.y - e.radius,
+            e.radius * 2,
+            e.radius * 2
+          )
         ) {
           e.selected = true;
           e.offset = getOffsetCoords(mouse as any, e);
@@ -132,7 +156,14 @@ class GameCanvas {
     });
 
     canvas.addEventListener("mouseup", () => {
-      tokens.forEach((e) => (e.selected = false));
+      tokens.forEach((e) => {
+        if (e.selected) {
+          // TODO: add checks if token can be placed or not
+          e.x = nearestDropPoint.x;
+          e.y = nearestDropPoint.y;
+        }
+        e.selected = false;
+      });
     });
   }
 }
