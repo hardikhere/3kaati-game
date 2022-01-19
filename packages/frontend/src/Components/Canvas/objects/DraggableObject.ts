@@ -1,4 +1,5 @@
 import uuidv4 from "utils/uuidv4";
+import { getNearestDropableArea } from "./utils";
 
 class DraggableToken {
   color: String;
@@ -11,6 +12,7 @@ class DraggableToken {
   selected = false;
   readonly id: number;
   readonly teamId: number;
+  nextDropPos = { x: 0, y: 0 };
   constructor(tokenInitOptions: ITokenInitOptions) {
     const { x, y, color, teamId, ctx } = tokenInitOptions;
     this.id = uuidv4();
@@ -31,6 +33,28 @@ class DraggableToken {
       ctx.fill();
     }
     ctx?.stroke();
+
+    if (!this.selected) return;
+    // look for dropable areas
+    const nearestPoint = getNearestDropableArea(
+      ctx.canvas.height,
+      ctx.canvas.width,
+      { x: this.x, y: this.y }
+    );
+
+    ctx.closePath();
+    // draw nearest point here
+    this.drawDroppableSuggesion(nearestPoint);
+  }
+
+  drawDroppableSuggesion({ x, y }: any) {
+    const { ctx } = this;
+    this.nextDropPos = { x, y };
+    if (!ctx) return;
+    ctx.beginPath();
+    ctx?.arc(x, y, 15, 0, 2 * Math.PI);
+    ctx.fillStyle = "#82FC7D";
+    ctx.fill();
     ctx.closePath();
   }
 
@@ -40,13 +64,6 @@ class DraggableToken {
 
   select() {
     this.selected = !this.selected;
-  }
-
-  clearToken() {
-    const { ctx } = this;
-    ctx?.beginPath();
-    ctx?.clearRect(this.x, this.y, 100, 100);
-    ctx?.stroke();
   }
 }
 

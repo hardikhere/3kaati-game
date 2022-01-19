@@ -1,7 +1,7 @@
-import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 import DraggableToken from "./DraggableObject";
+import { BOARD_PADDING } from "./utils";
 import Line from "./LineClass";
-import { getNearestDropableArea } from "./utils";
+import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 
 class GameCanvas {
   ctx: CanvasRenderingContext2D | null = null;
@@ -16,10 +16,11 @@ class GameCanvas {
     if (GameCanvas.isInitializedOnce)
       throw new Error("Game Canvas is singleton class");
     if (!ref) throw new Error("ref can not be falsy");
-    this.width = 500;
-    this.height = 500;
     this.ctx = ref.getContext("2d");
     if (!this.ctx) throw new Error("unable to get 2D context ");
+
+    this.width = this.ctx?.canvas.width - BOARD_PADDING * 2;
+    this.height = this.ctx?.canvas.height;
 
     GameCanvas.isInitializedOnce = true;
 
@@ -32,7 +33,7 @@ class GameCanvas {
         new DraggableToken({
           color: "red",
           teamId: 1,
-          x: 333,
+          x: 25,
           y: 34,
           ctx: this.ctx,
         })
@@ -44,8 +45,8 @@ class GameCanvas {
         new DraggableToken({
           color: "blue",
           teamId: 2,
-          x: 43,
-          y: 34,
+          x: 25,
+          y: 134,
           ctx: this.ctx,
         })
       );
@@ -55,7 +56,6 @@ class GameCanvas {
   }
 
   drawLines() {
-    // draw plus lines
     const { ctx } = this;
     if (!ctx) throw new Error("ctx can not be null");
     const L1 = new Line(0, this.width / 2, this.height, this.width / 2, ctx);
@@ -69,6 +69,12 @@ class GameCanvas {
 
     const L4 = new Line(0, 0, this.height, this.width, ctx);
     L4.drawLine();
+
+    const L5 = new Line(0, 0, 0, this.height, ctx);
+    L5.drawLine();
+
+    const L6 = new Line(this.width, 0, this.width, this.height, ctx);
+    L6.drawLine();
   }
 
   startAnimation() {
@@ -98,8 +104,7 @@ class GameCanvas {
     const { canvas } = ctx;
 
     const tokens = this.getPlayerTokens();
-    let nearestDropPoint = { x: 0, y: 0 };
-    canvas.addEventListener("mousemove", (e) => {
+    canvas.addEventListener("mousemove", (e: MouseEvent) => {
       let mouse = getMouseCoords(canvas, e);
 
       tokens.forEach((e) => {
@@ -119,15 +124,6 @@ class GameCanvas {
           )
         ) {
           if (!e.active) e.activate();
-          if (!e.selected) return;
-          // look for dropable areas
-          const nearestPoint = getNearestDropableArea(
-            ctx.canvas.height,
-            ctx.canvas.width,
-            mouse
-          );
-          nearestDropPoint = nearestPoint;
-          // draw nearest point here
         } else {
           e.active = false;
         }
@@ -159,8 +155,8 @@ class GameCanvas {
       tokens.forEach((e) => {
         if (e.selected) {
           // TODO: add checks if token can be placed or not
-          e.x = nearestDropPoint.x;
-          e.y = nearestDropPoint.y;
+          e.x = e.nextDropPos.x;
+          e.y = e.nextDropPos.y;
         }
         e.selected = false;
       });

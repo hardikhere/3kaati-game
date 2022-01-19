@@ -1,15 +1,15 @@
 export const getDropablePoints = (height: number, width: number) => {
   return [
     {
-      x: 0,
+      x: BOARD_PADDING,
       y: 0,
     },
     {
-      x: 0,
+      x: BOARD_PADDING,
       y: height,
     },
     {
-      x: 0,
+      x: BOARD_PADDING,
       y: height / 2,
     },
     {
@@ -26,15 +26,15 @@ export const getDropablePoints = (height: number, width: number) => {
     },
 
     {
-      x: width,
+      x: width - BOARD_PADDING,
       y: 0,
     },
     {
-      x: width,
+      x: width - BOARD_PADDING,
       y: height / 2,
     },
     {
-      x: width,
+      x: width - BOARD_PADDING,
       y: height,
     },
   ];
@@ -60,3 +60,5 @@ export const getNearestDropableArea = (
   });
   return result;
 };
+
+export const BOARD_PADDING = 50;
