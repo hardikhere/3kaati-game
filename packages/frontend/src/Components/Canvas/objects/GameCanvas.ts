@@ -1,4 +1,3 @@
-import DraggableToken from "./DraggableObject";
 import { BOARD_PADDING } from "./utils";
 import Line from "./LineClass";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
@@ -8,8 +7,7 @@ class GameCanvas {
   height: number;
   width: number;
   // TODO: add types below later
-  teamATokens: Array<any>;
-  teamBTokens: Array<any>;
+  players: Array<any> = [];
   currentTeam = 1;
   private static isInitializedOnce = false;
   constructor(ref: HTMLCanvasElement) {
@@ -23,36 +21,6 @@ class GameCanvas {
     this.height = this.ctx?.canvas.height;
 
     GameCanvas.isInitializedOnce = true;
-
-    // register tokens
-    this.teamATokens = [];
-    this.teamBTokens = [];
-    // TODO: register actual tokens this is temp
-    [1].forEach((el) => {
-      this.teamATokens.push(
-        new DraggableToken({
-          color: "red",
-          teamId: 1,
-          x: 25,
-          y: 34,
-          ctx: this.ctx,
-        })
-      );
-    });
-
-    [1].forEach((el) => {
-      this.teamATokens.push(
-        new DraggableToken({
-          color: "blue",
-          teamId: 2,
-          x: 25,
-          y: 134,
-          ctx: this.ctx,
-        })
-      );
-    });
-
-    this.registerCanvasEvents();
   }
 
   drawLines() {
@@ -77,15 +45,21 @@ class GameCanvas {
     L6.drawLine();
   }
 
+  getAllTokens() {
+    const teamATokens = this.players[0].playerTokens;
+    const teamBTokens = this.players[1].playerTokens;
+    const tokens = [...teamATokens, ...teamBTokens];
+    return tokens;
+  }
+
   startAnimation() {
     // clear Canvas
-    const { ctx, teamATokens, teamBTokens } = this;
+    const { ctx } = this;
     if (!ctx) throw new Error("ctx must be defined before starting animation");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = "white";
     this.drawLines();
-
-    const tokens = [...teamATokens, ...teamBTokens];
+    const tokens = this.getAllTokens();
     tokens.forEach((token) => {
       token.drawToken();
     });
@@ -93,8 +67,9 @@ class GameCanvas {
   }
 
   getPlayerTokens() {
-    if (this.currentTeam === 1) return this.teamATokens;
-    return this.teamBTokens;
+    if (this.players.length === 0) throw new Error("register players first");
+    if (this.currentTeam === 1) return this.players[0].playerTokens;
+    return this.players[1].playerTokens;
   }
 
   registerCanvasEvents() {
@@ -103,7 +78,7 @@ class GameCanvas {
     if (!ctx) throw new Error("Ctx must be defined before registering events");
     const { canvas } = ctx;
 
-    const tokens = this.getPlayerTokens();
+    const tokens = this.getAllTokens();
     canvas.addEventListener("mousemove", (e: MouseEvent) => {
       let mouse = getMouseCoords(canvas, e);
 
@@ -152,15 +127,19 @@ class GameCanvas {
     });
 
     canvas.addEventListener("mouseup", () => {
-      tokens.forEach((e) => {
-        if (e.selected) {
+      tokens.forEach((token) => {
+        if (token.selected) {
           // TODO: add checks if token can be placed or not
-          e.x = e.nextDropPos.x;
-          e.y = e.nextDropPos.y;
+          if (token.isTokenPlacable) token.placeToken();
+          else token.takeBackToPrevPos();
         }
-        e.selected = false;
+        token.selected = false;
       });
     });
+  }
+
+  registerPlayers(player1, player2) {
+    this.players = [player1, player2];
   }
 }
 export default GameCanvas;
