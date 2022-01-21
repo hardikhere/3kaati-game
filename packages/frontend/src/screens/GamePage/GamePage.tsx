@@ -3,7 +3,7 @@ import Canvas from "../../Components/Canvas";
 
 function GamePage() {
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "center" }}>
       <Canvas />
     </div>
   );

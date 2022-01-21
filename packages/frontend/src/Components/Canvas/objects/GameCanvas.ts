@@ -1,48 +1,56 @@
-import { BOARD_PADDING } from "./utils";
 import Line from "./LineClass";
+import boardImg from "assets/board.jpg";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 
 class GameCanvas {
   ctx: CanvasRenderingContext2D | null = null;
-  height: number;
-  width: number;
   // TODO: add types below later
   players: Array<any> = [];
   currentTeam = 1;
-  private static isInitializedOnce = false;
+  boardDetails = defaultBoardDetails;
+  boardImg = new Image();
+  static isInitializedOnce = false;
   constructor(ref: HTMLCanvasElement) {
     if (GameCanvas.isInitializedOnce)
       throw new Error("Game Canvas is singleton class");
     if (!ref) throw new Error("ref can not be falsy");
     this.ctx = ref.getContext("2d");
     if (!this.ctx) throw new Error("unable to get 2D context ");
-
-    this.width = this.ctx?.canvas.width - BOARD_PADDING * 2;
-    this.height = this.ctx?.canvas.height;
-
+    this.boardImg.onload = () => {
+      this.renderBoardImage();
+    };
+    this.boardImg.src = boardImg;
     GameCanvas.isInitializedOnce = true;
   }
 
   drawLines() {
     const { ctx } = this;
     if (!ctx) throw new Error("ctx can not be null");
-    const L1 = new Line(0, this.width / 2, this.height, this.width / 2, ctx);
+    const { boardDetails } = this;
+    const { offset, height, width } = boardDetails;
+    const L1 = new Line(offset.x, offset.y, offset.x, offset.y + height, ctx);
     L1.drawLine();
 
-    const L2 = new Line(this.width / 2, 0, this.width / 2, this.height, ctx);
+    const L2 = new Line(
+      offset.x + width,
+      offset.y,
+      offset.x + width,
+      offset.y + height,
+      ctx
+    );
     L2.drawLine();
 
-    const L3 = new Line(this.width, 0, 0, this.height, ctx);
+    const L3 = new Line(offset.x, offset.y, offset.x + width, offset.y, ctx);
     L3.drawLine();
 
-    const L4 = new Line(0, 0, this.height, this.width, ctx);
+    const L4 = new Line(
+      offset.x,
+      offset.y + height,
+      offset.x + width,
+      offset.y + height,
+      ctx
+    );
     L4.drawLine();
-
-    const L5 = new Line(0, 0, 0, this.height, ctx);
-    L5.drawLine();
-
-    const L6 = new Line(this.width, 0, this.width, this.height, ctx);
-    L6.drawLine();
   }
 
   getAllTokens() {
@@ -58,7 +66,7 @@ class GameCanvas {
     if (!ctx) throw new Error("ctx must be defined before starting animation");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = "white";
-    this.drawLines();
+    this.renderBoardImage();
     const tokens = this.getAllTokens();
     tokens.forEach((token) => {
       token.drawToken();
@@ -141,5 +149,24 @@ class GameCanvas {
   registerPlayers(player1, player2) {
     this.players = [player1, player2];
   }
+
+  renderBoardImage() {
+    this.ctx?.drawImage(
+      this.boardImg,
+      this.boardDetails.offset.x,
+      this.boardDetails.offset.y,
+      this.boardDetails.width,
+      this.boardDetails.height
+    );
+  }
 }
 export default GameCanvas;
+
+export const defaultBoardDetails = {
+  offset: {
+    x: 300,
+    y: 150,
+  },
+  height: 400,
+  width: 400,
+};

@@ -1,57 +1,60 @@
-export const getDropablePoints = (height: number, width: number) => {
+import { defaultBoardDetails } from "./GameCanvas";
+
+export const getDropablePoints = () => {
+  const { offset, height, width } = defaultBoardDetails;
   return [
     {
-      x: BOARD_PADDING,
-      y: 0,
+      x: offset.x,
+      y: offset.y,
       row: 1,
       col: 1,
     },
     {
-      x: width / 2,
-      y: 0,
+      x: offset.x + width / 2,
+      y: offset.y,
       row: 1,
       col: 2,
     },
     {
-      x: width - BOARD_PADDING,
-      y: 0,
+      x: width + offset.x,
+      y: offset.y,
       row: 1,
       col: 3,
     },
     {
-      x: BOARD_PADDING,
-      y: height / 2,
+      x: offset.x,
+      y: offset.y + height / 2,
       row: 2,
       col: 1,
     },
     {
-      x: width / 2,
-      y: height / 2,
+      x: offset.x + width / 2,
+      y: offset.y + height / 2,
       row: 2,
       col: 2,
     },
     {
-      x: width - BOARD_PADDING,
-      y: height / 2,
+      x: width + offset.x,
+      y: height / 2 + offset.y,
       row: 2,
       col: 3,
     },
     {
-      x: BOARD_PADDING,
-      y: height,
+      x: offset.x,
+      y: height + offset.y,
       row: 3,
       col: 1,
     },
     {
-      x: width / 2,
-      y: height,
+      x: width / 2 + offset.x,
+      y: height + offset.y,
       row: 3,
       col: 2,
     },
 
     {
-      x: width - BOARD_PADDING,
-      y: height,
+      x: width + offset.x,
+      y: height + offset.y,
       row: 3,
       col: 3,
     },
@@ -63,7 +66,7 @@ export const getNearestDropableArea = (
   width: number,
   mousePos: any
 ) => {
-  const dropableAreas = getDropablePoints(height, width);
+  const dropableAreas = getDropablePoints();
   const { x: mouseX, y: mouseY } = mousePos;
   let minDistance = Number.MAX_SAFE_INTEGER;
   let indexReturned = 0;
@@ -79,4 +82,4 @@ export const getNearestDropableArea = (
   return dropableAreas[indexReturned];
 };
 
-export const BOARD_PADDING = 50;
+export const BOARD_PADDING = 100;

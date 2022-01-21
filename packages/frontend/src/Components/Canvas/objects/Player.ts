@@ -26,7 +26,7 @@ export default class Player {
           ctx: this.ctx,
           teamId: this._id,
           x: this.position === "left" ? 25 : this.ctx.canvas.width - 25,
-          y: 40 * index,
+          y: 60 * index + 50,
         })
       );
     });

@@ -31,7 +31,7 @@ function Canvas() {
     initializeCanvas();
   }, [canvasRef]);
 
-  return <StyledCanvas ref={canvasRef} height={500} width={600} />;
+  return <StyledCanvas ref={canvasRef} height={600} width={1000} />;
 }
 
 export default Canvas;

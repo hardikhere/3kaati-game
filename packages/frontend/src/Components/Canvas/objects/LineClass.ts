@@ -1,5 +1,3 @@
-import { BOARD_PADDING } from "./utils";
-
 export default class Line {
   p1: Point;
   p2: Point;
@@ -11,8 +9,8 @@ export default class Line {
     p2y: number,
     ctx: CanvasRenderingContext2D
   ) {
-    this.p1 = { x: p1x + BOARD_PADDING, y: p1y };
-    this.p2 = { x: p2x + BOARD_PADDING, y: p2y };
+    this.p1 = { x: p1x, y: p1y };
+    this.p2 = { x: p2x, y: p2y };
     this.ctx = ctx;
   }
 
