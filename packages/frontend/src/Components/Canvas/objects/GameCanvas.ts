@@ -1,4 +1,3 @@
-import Line from "./LineClass";
 import boardImg from "assets/board.jpg";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 
@@ -21,36 +20,6 @@ class GameCanvas {
     };
     this.boardImg.src = boardImg;
     GameCanvas.isInitializedOnce = true;
-  }
-
-  drawLines() {
-    const { ctx } = this;
-    if (!ctx) throw new Error("ctx can not be null");
-    const { boardDetails } = this;
-    const { offset, height, width } = boardDetails;
-    const L1 = new Line(offset.x, offset.y, offset.x, offset.y + height, ctx);
-    L1.drawLine();
-
-    const L2 = new Line(
-      offset.x + width,
-      offset.y,
-      offset.x + width,
-      offset.y + height,
-      ctx
-    );
-    L2.drawLine();
-
-    const L3 = new Line(offset.x, offset.y, offset.x + width, offset.y, ctx);
-    L3.drawLine();
-
-    const L4 = new Line(
-      offset.x,
-      offset.y + height,
-      offset.x + width,
-      offset.y + height,
-      ctx
-    );
-    L4.drawLine();
   }
 
   getAllTokens() {
