@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "client": "npx kill-port 3000 && yarn workspace frontend start",
+    "client:build": "yarn workspace frontend build",
     "server": "yarn workspace server start",
     "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\""
   },
