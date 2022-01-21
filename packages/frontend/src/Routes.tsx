@@ -5,7 +5,7 @@ function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/game" element={<GamePage />} />
+        <Route path="/" element={<GamePage />} />
       </Routes>
     </Router>
   );
