@@ -10,6 +10,7 @@
     "client": "npx kill-port 3000 && yarn workspace frontend start",
     "client:build": "yarn workspace frontend build",
     "server": "yarn workspace server start",
+    "watch:server": "yarn workspace server tsc -w",
     "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\""
   },
   "repository": "git@github.com:hardikhere/3kaate.git",

@@ -1,10 +1,22 @@
 import express from "express";
-// rest of the code remains same
+import { Server } from "socket.io";
+import http from "http";
+
 const app = express();
+const server = http.createServer(app);
 const PORT = 8000;
-app.get("/", (req, res) => res.send("Express + TypeScript Server"));
-app.listen(PORT, () => {
-  console.log("🚀 ~ file: index.ts ~ line 7 ~ app.listen ~ PORT", PORT)
-  console.log("hiiiii hardik");
+const io = new Server(server);
+
+// TODO: replace it with redis
+const activeUsers = new Map();
+
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 });
