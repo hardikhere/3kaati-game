@@ -1,7 +1,9 @@
-import { getNearestDropableArea } from "./utils";
+import { getNearestDropableArea, isAnyTokenAlreadyPlaced } from "./utils";
 import blueToken from "assets/token1.png";
 import redToken from "assets/token2.png";
 import { nanoid } from "@reduxjs/toolkit";
+import store from "store";
+import { setToken } from "store/reducers/tokensSlice";
 
 class DraggableToken {
   color: String;
@@ -51,6 +53,7 @@ class DraggableToken {
     // of not
     // TODO: add check if that place is filled or not
     const newPos = this.getNewPosition();
+    if (isAnyTokenAlreadyPlaced(newPos)) return false;
     const { prevPos } = this;
     if (prevPos.row === null) return true;
     if (prevPos.col === null) return true;
@@ -79,7 +82,7 @@ class DraggableToken {
   }
 
   placeToken() {
-    const { ctx } = this;
+    const { ctx, teamId, id: tokenId } = this;
     if (!ctx) return;
     const { x, y, row, col } = this.getNewPosition();
     this.x = x;
@@ -87,6 +90,7 @@ class DraggableToken {
     this.row = row;
     this.column = col;
     this.prevPos = { row, col, x, y };
+    store.dispatch(setToken({ x, y, row, col, teamId, tokenId }));
   }
 
   drawToken() {

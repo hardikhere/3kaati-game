@@ -1,4 +1,5 @@
 import boardImg from "assets/board.jpg";
+import store from "store";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 
 class GameCanvas {
@@ -20,6 +21,15 @@ class GameCanvas {
     };
     this.boardImg.src = boardImg;
     GameCanvas.isInitializedOnce = true;
+    this.subscribeMethodsToRedux();
+  }
+
+  subscribeMethodsToRedux() {
+    store.subscribe(this.checkIfAnyoneWon);
+  }
+
+  checkIfAnyoneWon() {
+    console.log(store.getState());
   }
 
   getAllTokens() {

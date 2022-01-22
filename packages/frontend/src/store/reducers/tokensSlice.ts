@@ -9,14 +9,21 @@ export const tokensReducer = createSlice({
       if (!state[teamId]) state[teamId] = { [tokenId]: action.payload };
       else state[teamId][tokenId] = action.payload;
     },
+
+    setToken: (state, action) => {
+      const { tokenId, teamId } = action.payload;
+      if (!state[teamId] || !state[teamId][tokenId])
+        throw new Error("please initialize state before placing it");
+      state[teamId][tokenId] = action.payload;
+    },
   },
 });
 
-export const { initToken } = tokensReducer.actions;
+export const { initToken, setToken } = tokensReducer.actions;
 
 interface ITokenState {
   row: number | null;
-  column: number | null;
+  col: number | null;
   x: number;
   y: number;
   tokenId: string;

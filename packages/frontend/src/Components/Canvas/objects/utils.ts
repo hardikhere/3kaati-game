@@ -1,3 +1,4 @@
+import store from "store";
 import { defaultBoardDetails } from "./GameCanvas";
 
 export const getDropablePoints = () => {
@@ -83,3 +84,17 @@ export const getNearestDropableArea = (
 };
 
 export const BOARD_PADDING = 100;
+
+export const isAnyTokenAlreadyPlaced = ({ row, col }) => {
+  const state = store.getState();
+  const tokensState = Object.values(state.tokens);
+  for (let team of tokensState) {
+    const tokens = Object.values(team);
+    for (let token of tokens) {
+      if (token.row === row && token.col === col) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
