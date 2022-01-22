@@ -1,8 +1,11 @@
-import uuidv4 from "utils/uuidv4";
 import { getNearestDropableArea } from "./utils";
+import blueToken from "assets/token1.png";
+import redToken from "assets/token2.png";
+import { nanoid } from "@reduxjs/toolkit";
 
 class DraggableToken {
   color: String;
+  tokenImg = new Image();
   row: number | null = null;
   column: number | null = null;
   x: number;
@@ -13,17 +16,22 @@ class DraggableToken {
   prevPos: IPrevPos = { row: null, col: null, x: null, y: null };
   active = false;
   selected = false;
-  readonly id: number;
+  readonly id: string;
   readonly teamId: string;
   nextDropPos = { x: 0, y: 0 };
   constructor(tokenInitOptions: ITokenInitOptions) {
     const { x, y, color, teamId, ctx } = tokenInitOptions;
-    this.id = uuidv4();
+    this.id = nanoid(10);
     this.color = color;
     this.teamId = teamId;
     this.x = x;
     this.y = y;
     this.ctx = ctx;
+    this.tokenImg.onload = () => {
+      this.drawToken();
+    };
+    if (this.color === "blue") this.tokenImg.src = blueToken;
+    else this.tokenImg.src = redToken;
   }
 
   getNewPosition() {
@@ -78,21 +86,19 @@ class DraggableToken {
     this.y = y;
     this.row = row;
     this.column = col;
-    console.log("new pos is ", this.row, this.column);
-    console.log("prev pos is ", this.prevPos.row, this.prevPos.col);
     this.prevPos = { row, col, x, y };
   }
 
   drawToken() {
     const { ctx } = this;
     if (!ctx) return;
-    ctx?.beginPath();
-    ctx?.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-    if (this.active) {
-      ctx.fillStyle = "#155280";
-      ctx.fill();
-    }
-    ctx?.stroke();
+    ctx.drawImage(
+      this.tokenImg,
+      this.x - this.radius,
+      this.y - this.radius,
+      this.radius * 2,
+      this.radius * 2
+    );
 
     if (!this.selected) return;
     // look for dropable areas

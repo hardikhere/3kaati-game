@@ -75,9 +75,11 @@ class GameCanvas {
             e.radius * 2
           )
         ) {
+          document.body.style.cursor = "pointer";
           if (!e.active) e.activate();
         } else {
           e.active = false;
+          document.body.style.cursor = "default";
         }
       });
     });
