@@ -1,6 +1,7 @@
 import boardImg from "assets/board.jpg";
 import store from "store";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
+import { slope } from "./utils";
 
 class GameCanvas {
   ctx: CanvasRenderingContext2D | null = null;
@@ -25,11 +26,27 @@ class GameCanvas {
   }
 
   subscribeMethodsToRedux() {
-    store.subscribe(this.checkIfAnyoneWon);
+    store.subscribe(this.checkIfAnyoneWon.bind(this));
   }
 
   checkIfAnyoneWon() {
-    console.log(store.getState());
+    // TODO: change this logic
+    if (this.currentTeam === 1) {
+      const state = Object.values(store.getState().tokens);
+      const playerAtokens = Object.values(state[0]);
+      if (playerAtokens.length < 3) return;
+
+      const { x: x1, y: y1, row } = playerAtokens[0];
+      if (row === null) return;
+      const { x: x2, y: y2 } = playerAtokens[1];
+      const { x: x3, y: y3 } = playerAtokens[2];
+      const slopeA = slope(x1, y1, x2, y2);
+      const slopeB = slope(x2, y2, x3, y3);
+      if (slopeA === slopeB) {
+        // TODO: handle win here
+        console.log("player A won");
+      }
+    }
   }
 
   getAllTokens() {
