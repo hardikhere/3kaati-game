@@ -36,8 +36,17 @@ io.on("connection", (socket) => {
     console.log("🚀 ~ file: index.ts ~ line 37 ~ socket.on ~ data", data);
     console.log(`${socket.id} joining `, roomId);
     socket.join(roomId);
-    if (activeRooms.has(roomId))
+    if (activeRooms.has(roomId)) {
+      const playersInRoom = activeRooms.get(roomId);
+      if (playersInRoom?.length === 2) {
+        socket.send({ type: "limit_exceeded" });
+        socket.disconnect();
+        return;
+      }
       activeRooms.set(roomId, [...activeRooms.get(roomId), { ...data }]);
+    }
+    const present = activeRooms.get(roomId);
+    socket.send({ data: present, type: "present_users" });
     io.in(roomId).emit("JOINED_ROOM", activeRooms.get(roomId));
   });
   socket.on("disconnect", () => {

@@ -1,10 +1,13 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { useSocket } from "contexts/Socketio/SocketIoContext";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setPlayer } from "store/reducers/playersSlice";
 
 function HomePage() {
   const socketio = useSocket();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -18,7 +21,9 @@ function HomePage() {
   const createRoom = () => {
     socketio?.open();
     const newRoomId = nanoid(10);
-    socketio?.emit("CREATE_ROOM", { userName, roomId: newRoomId });
+    const playerId = nanoid(8);
+    socketio?.emit("CREATE_ROOM", { userName, roomId: newRoomId, playerId });
+    dispatch(setPlayer({ userName, roomId: newRoomId, playerId, isMe: true }));
     navigate(`/waiting/${newRoomId}`);
   };
 

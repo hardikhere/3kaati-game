@@ -1,24 +1,42 @@
 import { useSocket } from "contexts/Socketio/SocketIoContext";
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { setPlayer } from "store/reducers/playersSlice";
 
 function WaitingPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const socketio = useSocket();
   const params = useParams();
+  // TODO: add RootState instead of any
+  const players = useSelector((state: any) => state.players);
+
   useEffect(() => {
-    socketio?.on("JOINED_ROOM", (room) => {
-      console.log("your friend joined the room ", room);
+    if (Object.keys(players).length === 2) navigate("/game");
+  }, [players]);
+
+  useEffect(() => {
+    const me = players[0];
+    socketio?.on("JOINED_ROOM", (players) => {
+      players?.forEach((player) => {
+        if (player.playerId !== me?.playerId) {
+          dispatch(setPlayer(player));
+        }
+      });
     });
-    console.log(
-      "🚀 ~ file: WaitingPage.tsx ~ line 10 ~ socketio?.on ~ socketio",
-      socketio
-    );
   }, []);
   return (
     <div>
       <h1>waiting for your friend to join room</h1>
 
-      <a href={`http://localhost:3000/join/${params.roomId}`}>link is here</a>
+      <a
+        target="_blank"
+        href={`http://localhost:3000/join/${params.roomId}`}
+        rel="noreferrer"
+      >
+        link is here
+      </a>
     </div>
   );
 }
