@@ -4,8 +4,7 @@ import http from "http";
 import cors from "cors";
 import { nanoid } from "nanoid";
 
-const app = express();
-app.use(cors());
+const app = express().use(cors);
 const server = http.createServer(app);
 const PORT = 8000;
 const io = new Server(server, {
