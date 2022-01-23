@@ -13,7 +13,8 @@
   },
   "scripts": {
     "watch": "tsc --watch",
-    "start": "npx kill-port 8000 && nodemon build/src/index.js && yarn watch",
+    "dev": "npx kill-port 8000 && nodemon build/src/index.js && yarn watch",
+    "start": "yarn build && node build/src/index.js",
     "build": "tsc --project ./"
   },
   "devDependencies": {
