@@ -2,6 +2,7 @@ import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
+import { nanoid } from "nanoid";
 
 const app = express();
 app.use(cors());
@@ -15,19 +16,29 @@ const io = new Server(server, {
 });
 
 // TODO: replace it with redis
-const activeUsers = new Map();
+// string --> users[]
+const activeRooms = new Map();
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
   socket.on("CREATE_ROOM", (data) => {
-    console.log("got data ", data);
-    socket.join(socket.id);
+    console.log("creacted room");
+    activeRooms.set(data.roomId, [
+      {
+        ...data,
+      },
+    ]);
+    socket.join(data.roomId);
   });
 
-  socket.on("JOIN_ROOM", (roomId) => {
+  socket.on("JOIN_ROOM", (data) => {
+    const { roomId } = data;
+    console.log("🚀 ~ file: index.ts ~ line 37 ~ socket.on ~ data", data);
     console.log(`${socket.id} joining `, roomId);
     socket.join(roomId);
-    io.in(roomId).emit("JOINED_ROOM", Array.from(socket.rooms.values()));
+    if (activeRooms.has(roomId))
+      activeRooms.set(roomId, [...activeRooms.get(roomId), { ...data }]);
+    io.in(roomId).emit("JOINED_ROOM", activeRooms.get(roomId));
   });
   socket.on("disconnect", () => {
     console.log("user disconnected");

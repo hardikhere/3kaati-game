@@ -1,3 +1,4 @@
+import { nanoid } from "@reduxjs/toolkit";
 import { useSocket } from "contexts/Socketio/SocketIoContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,8 +17,9 @@ function HomePage() {
   };
   const createRoom = () => {
     socketio?.open();
-    socketio?.emit("CREATE_ROOM", { userName });
-    navigate("/waiting");
+    const newRoomId = nanoid(10);
+    socketio?.emit("CREATE_ROOM", { userName, roomId: newRoomId });
+    navigate(`/waiting/${newRoomId}`);
   };
 
   const joinRoom = () => {

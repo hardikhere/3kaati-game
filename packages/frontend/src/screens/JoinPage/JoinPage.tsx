@@ -1,19 +1,41 @@
 import { useSocket } from "contexts/Socketio/SocketIoContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 function JoinPage() {
   const params = useParams();
   const socketio = useSocket();
+
+  const [username, setUserName] = useState("");
+  const handleChange = (e) => {
+    setUserName(e.target.value);
+  };
+
+  function joinRoom() {
+    socketio?.emit("JOIN_ROOM", {
+      username,
+      roomId: params.roomId,
+    });
+  }
+
   useEffect(() => {
     socketio?.open();
-    console.log(
-      "🚀 ~ file: JoinPage.tsx ~ line 10 ~ useEffect ~ params.roomId",
-      params.roomId
-    );
-    socketio?.emit("JOIN_ROOM", params.roomId);
   }, []);
-  return <div>joining..</div>;
+
+  return (
+    <div>
+      <div>
+        <label htmlFor="username">Your unique User name</label>
+        <input
+          value={username}
+          type="text"
+          id="username"
+          onChange={handleChange}
+        />
+        <button onClick={joinRoom}>Join Room</button>
+      </div>
+    </div>
+  );
 }
 
 export default JoinPage;

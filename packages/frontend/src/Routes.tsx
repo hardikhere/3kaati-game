@@ -11,7 +11,7 @@ function AppRoutes() {
         <Route path="/game" element={<GamePage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/join/:roomId" element={<JoinPage />} />
-        <Route path="/waiting" element={<WaitingPage />} />
+        <Route path="/waiting/:roomId" element={<WaitingPage />} />
       </Routes>
     </Router>
   );
