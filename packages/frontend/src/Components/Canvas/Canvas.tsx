@@ -1,3 +1,4 @@
+import { useSocket } from "contexts/Socketio/SocketIoContext";
 import { useEffect, useRef } from "react";
 import { StyledCanvas } from "./canvas.styled";
 import GameCanvas from "./objects/GameCanvas";
@@ -5,6 +6,13 @@ import Player from "./objects/Player";
 
 function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const socketio = useSocket();
+
+  useEffect(() => {
+    socketio?.on("connect", () => {
+      console.log("open");
+    });
+  }, []);
 
   const initializeCanvas = () => {
     if (!canvasRef.current) return;
@@ -29,6 +37,7 @@ function Canvas() {
 
   useEffect(() => {
     initializeCanvas();
+    socketio?.open();
   }, [canvasRef]);
 
   return <StyledCanvas ref={canvasRef} height={600} width={1000} />;
