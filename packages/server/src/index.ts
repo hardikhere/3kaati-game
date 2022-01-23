@@ -6,10 +6,10 @@ import { nanoid } from "nanoid";
 
 const app = express().use(cors);
 const server = http.createServer(app);
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://3kaati.vercel.app/"],
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });

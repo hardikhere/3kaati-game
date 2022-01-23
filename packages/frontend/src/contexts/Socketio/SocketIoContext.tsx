@@ -5,9 +5,10 @@ export const useSocket = () => useContext(SocketContext);
 export default function SocketProvider({ children }) {
   const socketio = useMemo(
     () =>
-      io("ws://localhost:8000", {
+      io("https://teenkaate.herokuapp.com", {
         upgrade: false,
         autoConnect: false,
+        transports: ["websocket"],
       }),
     []
   );
