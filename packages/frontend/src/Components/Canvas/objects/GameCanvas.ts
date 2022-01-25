@@ -13,9 +13,6 @@ class GameCanvas {
   static isInitializedOnce = false;
   isDrawingWinningLine = false;
   winningLinePath = {
-    slope: 0,
-    x: 0,
-    y: 0,
     till: { x: 0, y: 0 },
     from: { x: 0, y: 0 },
   };
@@ -55,9 +52,6 @@ class GameCanvas {
         console.log("player A won");
 
         this.winningLinePath = {
-          slope: slopeA,
-          x: x1,
-          y: y1,
           till: {
             x: x3,
             y: y3,
@@ -71,30 +65,17 @@ class GameCanvas {
 
   drawWinningLine(_) {
     if (!this.ctx) return;
-    if (
-      this.winningLinePath.x >= this.winningLinePath.till.x &&
-      this.winningLinePath.y >= this.winningLinePath.till.y
-    ) {
-      this.isDrawingWinningLine = false;
-      return;
-    }
-
     const { winningLinePath, ctx } = this;
     let { from, till } = winningLinePath;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#0086DE";
     ctx.moveTo(from.x, from.y);
     ctx.lineWidth = 10;
     ctx.strokeStyle = "#F4FFDA";
     ctx.stroke();
     ctx.lineTo(till.x, till.y);
-    ctx.fillStyle = "#B2FF00";
-    ctx.fillRect(winningLinePath.x, winningLinePath.y, 10, 10);
-    const dx = till.x - from.x;
-    const dy = till.y - from.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    let velX = (dx / dist) * 15;
-    let velY = (dy / dist) * 15;
-    winningLinePath.x += velX;
-    winningLinePath.y += velY;
+    ctx.shadowBlur = 0;
+    ctx.closePath();
   }
 
   getAllTokens() {

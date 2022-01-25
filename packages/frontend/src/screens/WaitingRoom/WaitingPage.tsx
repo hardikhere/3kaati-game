@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { setPlayer } from "store/reducers/playersSlice";
+import { getLink } from "utils/common";
 
 function WaitingPage() {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ function WaitingPage() {
 
       <a
         target="_blank"
-        href={`http://localhost:3000/join/${params.roomId}`}
+        href={`${getLink()}/join/${params.roomId}`}
         rel="noreferrer"
       >
         link is here
