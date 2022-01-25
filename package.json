@@ -7,7 +7,7 @@
     "packages/server"
   ],
   "scripts": {
-    "client": "npx kill-port 3000 && yarn workspace frontend start",
+    "client": "yarn workspace frontend start",
     "client:build": "yarn workspace frontend build",
     "server": "yarn workspace server start",
     "watch:server": "yarn workspace server tsc -w",

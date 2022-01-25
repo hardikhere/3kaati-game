@@ -11,6 +11,14 @@ class GameCanvas {
   boardDetails = defaultBoardDetails;
   boardImg = new Image();
   static isInitializedOnce = false;
+  isDrawingWinningLine = false;
+  winningLinePath = {
+    slope: 0,
+    x: 0,
+    y: 0,
+    till: { x: 0, y: 0 },
+    from: { x: 0, y: 0 },
+  };
   constructor(ref: HTMLCanvasElement) {
     if (GameCanvas.isInitializedOnce)
       throw new Error("Game Canvas is singleton class");
@@ -45,8 +53,48 @@ class GameCanvas {
       if (slopeA === slopeB) {
         // TODO: handle win here
         console.log("player A won");
+
+        this.winningLinePath = {
+          slope: slopeA,
+          x: x1,
+          y: y1,
+          till: {
+            x: x3,
+            y: y3,
+          },
+          from: { x: x1, y: y1 },
+        };
+        this.isDrawingWinningLine = true;
       }
     }
+  }
+
+  drawWinningLine(_) {
+    if (!this.ctx) return;
+    if (
+      this.winningLinePath.x >= this.winningLinePath.till.x &&
+      this.winningLinePath.y >= this.winningLinePath.till.y
+    ) {
+      this.isDrawingWinningLine = false;
+      return;
+    }
+
+    const { winningLinePath, ctx } = this;
+    let { from, till } = winningLinePath;
+    ctx.moveTo(from.x, from.y);
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#F4FFDA";
+    ctx.stroke();
+    ctx.lineTo(till.x, till.y);
+    ctx.fillStyle = "#B2FF00";
+    ctx.fillRect(winningLinePath.x, winningLinePath.y, 10, 10);
+    const dx = till.x - from.x;
+    const dy = till.y - from.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    let velX = (dx / dist) * 15;
+    let velY = (dy / dist) * 15;
+    winningLinePath.x += velX;
+    winningLinePath.y += velY;
   }
 
   getAllTokens() {
@@ -63,6 +111,9 @@ class GameCanvas {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = "white";
     this.renderBoardImage();
+    if (this.isDrawingWinningLine) {
+      this.drawWinningLine(this.winningLinePath);
+    }
     const tokens = this.getAllTokens();
     tokens.forEach((token) => {
       token.drawToken();
