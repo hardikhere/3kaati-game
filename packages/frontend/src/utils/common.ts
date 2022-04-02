@@ -33,5 +33,5 @@ export const cursorInRect = (
 export function getLink() {
   if (process.env.NODE_ENV === "production") {
     return "https://teenkaate.herokuapp.com";
-  } else return "http://localhost:3000";
+  } else return "http://localhost:8000";
 }

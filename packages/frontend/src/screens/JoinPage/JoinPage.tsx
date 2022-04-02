@@ -24,6 +24,8 @@ function JoinPage() {
       username,
       roomId: params.roomId,
       playerId: playerId.current,
+      color: "blue",
+      position: "right",
     });
   }
 

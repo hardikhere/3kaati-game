@@ -22,8 +22,15 @@ function HomePage() {
     socketio?.open();
     const newRoomId = nanoid(10);
     const playerId = nanoid(8);
-    socketio?.emit("CREATE_ROOM", { userName, roomId: newRoomId, playerId });
-    dispatch(setPlayer({ userName, roomId: newRoomId, playerId, isMe: true }));
+    const playerDetails = {
+      userName,
+      roomId: newRoomId,
+      playerId,
+      color: "red",
+      position: "left",
+    };
+    socketio?.emit("CREATE_ROOM", playerDetails);
+    dispatch(setPlayer({ ...playerDetails, isMe: true }));
     navigate(`/waiting/${newRoomId}`);
   };
 
