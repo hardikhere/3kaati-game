@@ -48,6 +48,11 @@ io.on("connection", (socket) => {
     socket.send({ data: present, type: "present_users" });
     io.in(roomId).emit("JOINED_ROOM", activeRooms.get(roomId));
   });
+
+  socket.on('MOVE', (data) => {
+    const { roomId } = data;
+    io.in(roomId).emit("MOVED", data);
+  })
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

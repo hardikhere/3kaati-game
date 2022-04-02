@@ -23,6 +23,7 @@ function Canvas() {
       const playerInstance = new Player({ ...player, ctx: gameCanvas.ctx });
       playerInstance.initializeTokens();
       gameCanvas.registerPlayer(playerInstance);
+      if (player.color === "red") playerInstance.giveChance();
     });
 
     gameCanvas.registerCanvasEvents();

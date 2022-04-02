@@ -1,6 +1,7 @@
 import store from "store";
 import DraggableToken from "./DraggableObject";
 import { initToken } from "store/reducers/tokensSlice";
+import { changeTurn } from "store/reducers/playersSlice";
 
 export default class Player {
   _id: string;
@@ -44,6 +45,10 @@ export default class Player {
 
   get playerTokens() {
     return this.tokens;
+  }
+
+  giveChance() {
+    store.dispatch(changeTurn(this._id))
   }
 }
 export interface IPlayerProps {
