@@ -5,16 +5,16 @@ export const tokensReducer = createSlice({
   initialState: {} as tokenReduxState,
   reducers: {
     initToken: (state: tokenReduxState, action) => {
-      const { teamId, tokenId } = action.payload;
-      if (!state[teamId]) state[teamId] = { [tokenId]: action.payload };
-      else state[teamId][tokenId] = action.payload;
+      const { playerId, tokenId } = action.payload;
+      if (!state[playerId]) state[playerId] = { [tokenId]: action.payload };
+      else state[playerId][tokenId] = action.payload;
     },
 
     setToken: (state, action) => {
-      const { tokenId, teamId } = action.payload;
-      if (!state[teamId] || !state[teamId][tokenId])
+      const { tokenId, playerId } = action.payload;
+      if (!state[playerId] || !state[playerId][tokenId])
         throw new Error("please initialize state before placing it");
-      state[teamId][tokenId] = action.payload;
+      state[playerId][tokenId] = action.payload;
     },
   },
 });

@@ -16,6 +16,8 @@ interface IUser {
   roomId: string;
   playerId: string;
   isMe: boolean;
+  color: "red" | "blue";
+  position: "left" | "right";
 }
 
 type playersState = Record<string, IUser>;

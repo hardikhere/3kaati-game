@@ -176,8 +176,8 @@ class GameCanvas {
     });
   }
 
-  registerPlayers(player1, player2) {
-    this.players = [player1, player2];
+  registerPlayer(player) {
+    this.players.push(player);
   }
 
   renderBoardImage() {

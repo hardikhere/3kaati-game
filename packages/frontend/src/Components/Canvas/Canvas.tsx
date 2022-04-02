@@ -1,4 +1,5 @@
 import { useSocket } from "contexts/Socketio/SocketIoContext";
+import usePlayers from "hooks/usePlayers";
 import { useEffect, useRef } from "react";
 import { StyledCanvas } from "./canvas.styled";
 import GameCanvas from "./objects/GameCanvas";
@@ -7,6 +8,7 @@ import Player from "./objects/Player";
 function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const socketio = useSocket();
+  const { playersArr } = usePlayers();
 
   useEffect(() => {
     socketio?.on("connect", () => {
@@ -17,20 +19,12 @@ function Canvas() {
   const initializeCanvas = () => {
     if (!canvasRef.current) return;
     const gameCanvas = new GameCanvas(canvasRef.current);
-    const player1 = new Player({
-      color: "red",
-      ctx: gameCanvas.ctx,
-      position: "left",
-    });
-    const player2 = new Player({
-      color: "blue",
-      ctx: gameCanvas.ctx,
-      position: "right",
+    playersArr.forEach((player) => {
+      const playerInstance = new Player({ ...player, ctx: gameCanvas.ctx });
+      playerInstance.initializeTokens();
+      gameCanvas.registerPlayer(playerInstance);
     });
 
-    player1.initializeTokens();
-    player2.initializeTokens();
-    gameCanvas.registerPlayers(player1, player2);
     gameCanvas.registerCanvasEvents();
     gameCanvas.startAnimation();
   };

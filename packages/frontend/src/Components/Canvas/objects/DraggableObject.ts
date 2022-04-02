@@ -19,13 +19,13 @@ class DraggableToken {
   active = false;
   selected = false;
   readonly id: string;
-  readonly teamId: string;
+  readonly playerId: string;
   nextDropPos = { x: 0, y: 0 };
   constructor(tokenInitOptions: ITokenInitOptions) {
-    const { x, y, color, teamId, ctx } = tokenInitOptions;
+    const { x, y, color, playerId, ctx } = tokenInitOptions;
     this.id = nanoid(10);
     this.color = color;
-    this.teamId = teamId;
+    this.playerId = playerId;
     this.x = x;
     this.y = y;
     this.ctx = ctx;
@@ -82,7 +82,7 @@ class DraggableToken {
   }
 
   placeToken() {
-    const { ctx, teamId, id: tokenId } = this;
+    const { ctx, playerId, id: tokenId } = this;
     if (!ctx) return;
     const { x, y, row, col } = this.getNewPosition();
     this.x = x;
@@ -90,7 +90,7 @@ class DraggableToken {
     this.row = row;
     this.column = col;
     this.prevPos = { row, col, x, y };
-    store.dispatch(setToken({ x, y, row, col, teamId, tokenId }));
+    store.dispatch(setToken({ x, y, row, col, playerId, tokenId }));
   }
 
   drawToken() {
@@ -146,7 +146,7 @@ interface ITokenInitOptions {
   x: number;
   y: number;
   color: string;
-  teamId: string;
+  playerId: string;
   ctx: CanvasRenderingContext2D | null;
 }
 
