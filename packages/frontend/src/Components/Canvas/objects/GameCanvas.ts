@@ -122,26 +122,27 @@ class GameCanvas {
     canvas.addEventListener("mousemove", (e: MouseEvent) => {
       let mouse = getMouseCoords(canvas, e);
 
-      tokens.forEach((e) => {
-        if (e.selected) {
-          e.x = mouse.x - e.offset.x;
-          e.y = mouse.y - e.offset.y;
+      tokens.forEach((token) => {
+        if (!token.hasChance && !token.isMine) return;
+        if (token.selected) {
+          token.x = mouse.x - token.offset.x;
+          token.y = mouse.y - token.offset.y;
         }
 
         if (
           cursorInRect(
             mouse.x,
             mouse.y,
-            e.x - e.radius,
-            e.y - e.radius,
-            e.radius * 2,
-            e.radius * 2
+            token.x - token.radius,
+            token.y - token.radius,
+            token.radius * 2,
+            token.radius * 2
           )
         ) {
           document.body.style.cursor = "pointer";
-          if (!e.active) e.activate();
+          if (!token.active) token.activate();
         } else {
-          e.active = false;
+          token.active = false;
           document.body.style.cursor = "default";
         }
       });
@@ -149,27 +150,30 @@ class GameCanvas {
 
     canvas.addEventListener("mousedown", (e) => {
       let mouse = getMouseCoords(canvas, e);
-      tokens.forEach((e) => {
+      tokens.forEach((token) => {
+        console.log("\n\n🚀 ~ file: GameCanvas.ts ~ line 155 ~ GameCanvas ~ tokens.forEach ~ token.isMine", token.isMine)
+        if (!token.hasChance || !token.isMine) return;
         if (
           cursorInRect(
             mouse.x,
             mouse.y,
-            e.x - e.radius,
-            e.y - e.radius,
-            e.radius * 2,
-            e.radius * 2
+            token.x - token.radius,
+            token.y - token.radius,
+            token.radius * 2,
+            token.radius * 2
           )
         ) {
-          e.selected = true;
-          e.offset = getOffsetCoords(mouse as any, e);
+          token.selected = true;
+          token.offset = getOffsetCoords(mouse as any, token);
         } else {
-          e.selected = false;
+          token.selected = false;
         }
       });
     });
 
     canvas.addEventListener("mouseup", () => {
       tokens.forEach((token) => {
+        if (!token.hasChance && !token.isMine) return;
         if (token.selected) {
           // TODO: add checks if token can be placed or not
           if (token.isTokenPlacable) token.placeToken();
@@ -200,6 +204,8 @@ class GameCanvas {
     socketio.on("MOVED", data => {
       console.log("\n\n🚀 ~ file: GameCanvas.ts ~ line 200 ~ GameCanvas ~ registerSocketEvents ~ data", data)
       this.movePlayer(data);
+      const player = this.players.find(p => p._id !== data.playerId);
+      player?.giveChance();
     })
   }
 

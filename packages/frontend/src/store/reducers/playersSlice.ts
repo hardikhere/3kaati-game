@@ -17,7 +17,7 @@ export const playerSlice = createSlice({
 });
 
 export const { setPlayer, changeTurn } = playerSlice.actions;
-interface IUser {
+export interface IUser {
   userName: string;
   roomId: string;
   playerId: string;

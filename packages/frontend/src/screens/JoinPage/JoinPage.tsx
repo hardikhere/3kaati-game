@@ -11,7 +11,7 @@ function JoinPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [username, setUserName] = useState("");
+  const [userName, setUserName] = useState("");
   const handleChange = (e) => {
     setUserName(e.target.value);
   };
@@ -19,13 +19,16 @@ function JoinPage() {
   const playerId = useRef(nanoid(8));
 
   function joinRoom() {
-    socketio?.emit("JOIN_ROOM", {
-      username,
+    const userDetails = {
+      userName,
       roomId: params.roomId,
       playerId: playerId.current,
       color: "blue",
       position: "right",
-    });
+      isMe: true,
+    };
+    socketio?.emit("JOIN_ROOM", userDetails);
+    dispatch(setPlayer(userDetails));
   }
 
   useEffect(() => {
@@ -39,11 +42,7 @@ function JoinPage() {
       console.log(data);
       if (data.type !== "present_users") return;
       data?.data?.forEach((player) => {
-        // TODO: remove any later
-        const dataToSave: any = { ...player };
-        if (player.playerId === playerId.current) {
-          dataToSave.isMe = true;
-        } else dataToSave.isMe = false;
+        const dataToSave: any = { ...player, isMe: false };
         dispatch(setPlayer(dataToSave));
       });
     });
@@ -52,11 +51,11 @@ function JoinPage() {
   return (
     <div>
       <div>
-        <label htmlFor="username">Your unique User name</label>
+        <label htmlFor="userName">Your unique User name</label>
         <input
-          value={username}
+          value={userName}
           type="text"
-          id="username"
+          id="userName"
           onChange={handleChange}
         />
         <button onClick={joinRoom}>Join Room</button>

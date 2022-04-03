@@ -34,9 +34,10 @@ io.on("connection", (socket) => {
     const { roomId } = data;
     console.log("🚀 ~ file: index.ts ~ line 37 ~ socket.on ~ data", data);
     console.log(`${socket.id} joining `, roomId);
+    const playersInRoom = activeRooms.get(roomId);
+    socket.send({ data: playersInRoom, type: "present_users" });
     socket.join(roomId);
     if (activeRooms.has(roomId)) {
-      const playersInRoom = activeRooms.get(roomId);
       if (playersInRoom?.length === 2) {
         socket.send({ type: "limit_exceeded" });
         socket.disconnect();
@@ -44,9 +45,7 @@ io.on("connection", (socket) => {
       }
       activeRooms.set(roomId, [...activeRooms.get(roomId), { ...data }]);
     }
-    const present = activeRooms.get(roomId);
-    socket.send({ data: present, type: "present_users" });
-    io.in(roomId).emit("JOINED_ROOM", activeRooms.get(roomId));
+    io.in(roomId).emit("JOINED_ROOM", data);
   });
 
   socket.on('MOVE', (data) => {

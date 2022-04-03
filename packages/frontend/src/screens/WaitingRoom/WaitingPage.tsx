@@ -16,13 +16,8 @@ function WaitingPage() {
   }, [players]);
 
   useEffect(() => {
-    const me = players[0];
-    socketio?.on("JOINED_ROOM", (players) => {
-      players?.forEach((player) => {
-        if (player.playerId !== me?.playerId) {
-          dispatch(setPlayer(player));
-        }
-      });
+    socketio?.on("JOINED_ROOM", (player) => {
+      dispatch(setPlayer({ ...player, isMe: false }));
     });
   }, []);
   return (

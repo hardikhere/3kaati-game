@@ -40,10 +40,10 @@ function HomePage() {
     <div>
       <form>
         <h3>Create room</h3>
-        <label htmlFor="username">Your nick name</label>
+        <label htmlFor="userName">Your nick name</label>
         <input
           type="text"
-          id="username"
+          id="userName"
           onChange={handleNameChange}
           value={userName}
         />
@@ -52,10 +52,10 @@ function HomePage() {
 
       <form>
         <h3>Join room</h3>
-        <label htmlFor="username">Your nick name</label>
+        <label htmlFor="userName">Your nick name</label>
         <input
           type="text"
-          id="username"
+          id="userName"
           onChange={handleNameChange}
           value={userName}
         />

@@ -2,7 +2,6 @@ import { getNearestDropableArea, isAnyTokenAlreadyPlaced } from "./utils";
 import { socketio } from "utils/socket";
 import blueToken from "assets/token1.png";
 import redToken from "assets/token2.png";
-import { nanoid } from "@reduxjs/toolkit";
 import store from "store";
 import { setToken } from "store/reducers/tokensSlice";
 
@@ -137,6 +136,14 @@ class DraggableToken {
 
   activate() {
     this.active = !this.active;
+  }
+
+  get hasChance() {
+    return store.getState().players[this.playerId].hasChance;
+  }
+
+  get isMine() {
+    return store.getState().players[this.playerId].isMe;
   }
 
   select() {
