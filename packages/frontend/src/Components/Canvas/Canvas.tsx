@@ -1,5 +1,5 @@
-import { useSocket } from "contexts/Socketio/SocketIoContext";
 import usePlayers from "hooks/usePlayers";
+import { socketio } from "utils/socket";
 import { useEffect, useRef } from "react";
 import { StyledCanvas } from "./canvas.styled";
 import GameCanvas from "./objects/GameCanvas";
@@ -7,7 +7,6 @@ import Player from "./objects/Player";
 
 function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const socketio = useSocket();
   const { playersArr } = usePlayers();
 
   useEffect(() => {

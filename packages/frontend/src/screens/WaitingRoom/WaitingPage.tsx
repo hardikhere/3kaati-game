@@ -1,4 +1,4 @@
-import { useSocket } from "contexts/Socketio/SocketIoContext";
+import { socketio } from "utils/socket";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,7 +7,6 @@ import { setPlayer } from "store/reducers/playersSlice";
 function WaitingPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const socketio = useSocket();
   const params = useParams();
   // TODO: add RootState instead of any
   const players = useSelector((state: any) => state.players);

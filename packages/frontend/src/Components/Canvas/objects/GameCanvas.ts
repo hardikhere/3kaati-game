@@ -1,12 +1,15 @@
 import boardImg from "assets/board.jpg";
 import store from "store";
+import { setToken } from "store/reducers/tokensSlice";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
+import { socketio } from "utils/socket";
+import Player from "./Player";
 import { slope } from "./utils";
 
 class GameCanvas {
   ctx: CanvasRenderingContext2D | null = null;
   // TODO: add types below later
-  players: Array<any> = [];
+  players: Array<Player> = [];
   currentTeam = 1;
   boardDetails = defaultBoardDetails;
   boardImg = new Image();
@@ -28,6 +31,7 @@ class GameCanvas {
     this.boardImg.src = boardImg;
     GameCanvas.isInitializedOnce = true;
     this.subscribeMethodsToRedux();
+    this.registerSocketEvents();
   }
 
   subscribeMethodsToRedux() {
@@ -178,6 +182,25 @@ class GameCanvas {
 
   registerPlayer(player) {
     this.players.push(player);
+  }
+
+  movePlayer(playerData) {
+    const player = this.players.find(p => p._id === playerData.playerId);
+    if (!player) throw new Error("player not found");
+    const token = player.getTokenById(playerData.tokenId);
+    if (!token) throw new Error("token not found");
+    token.x = playerData.x;
+    token.y = playerData.y;
+    token.row = playerData.row;
+    token.column = playerData.col;
+    store.dispatch(setToken(playerData));
+  }
+
+  registerSocketEvents() {
+    socketio.on("MOVED", data => {
+      console.log("\n\n🚀 ~ file: GameCanvas.ts ~ line 200 ~ GameCanvas ~ registerSocketEvents ~ data", data)
+      this.movePlayer(data);
+    })
   }
 
   renderBoardImage() {

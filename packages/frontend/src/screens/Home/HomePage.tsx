@@ -1,12 +1,11 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { useSocket } from "contexts/Socketio/SocketIoContext";
+import { socketio } from "utils/socket";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setPlayer } from "store/reducers/playersSlice";
 
 function HomePage() {
-  const socketio = useSocket();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");

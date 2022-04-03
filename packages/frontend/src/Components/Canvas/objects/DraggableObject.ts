@@ -1,4 +1,5 @@
 import { getNearestDropableArea, isAnyTokenAlreadyPlaced } from "./utils";
+import { socketio } from "utils/socket";
 import blueToken from "assets/token1.png";
 import redToken from "assets/token2.png";
 import { nanoid } from "@reduxjs/toolkit";
@@ -22,8 +23,8 @@ class DraggableToken {
   readonly playerId: string;
   nextDropPos = { x: 0, y: 0 };
   constructor(tokenInitOptions: ITokenInitOptions) {
-    const { x, y, color, playerId, ctx } = tokenInitOptions;
-    this.id = nanoid(10);
+    const { x, y, color, playerId, ctx, tokenId } = tokenInitOptions;
+    this.id = tokenId;
     this.color = color;
     this.playerId = playerId;
     this.x = x;
@@ -90,7 +91,10 @@ class DraggableToken {
     this.row = row;
     this.column = col;
     this.prevPos = { row, col, x, y };
-    store.dispatch(setToken({ x, y, row, col, playerId, tokenId }));
+    const roomId = store.getState().players[playerId].roomId;
+    const tokenDetails = { x, y, row, col, playerId, tokenId }
+    store.dispatch(setToken(tokenDetails));
+    socketio.emit("MOVE", { ...tokenDetails, roomId });
   }
 
   drawToken() {
@@ -148,6 +152,7 @@ interface ITokenInitOptions {
   color: string;
   playerId: string;
   ctx: CanvasRenderingContext2D | null;
+  tokenId: string;
 }
 
 export interface IPrevPos {

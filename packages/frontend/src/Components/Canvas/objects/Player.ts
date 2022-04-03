@@ -7,7 +7,7 @@ export default class Player {
   _id: string;
   // Array of three tokens
   // TODO: define Interface later
-  tokens: Array<any> = [];
+  tokens: Array<DraggableToken> = [];
   color: string;
   // TODO: Make it enum
   position: string = "left";
@@ -32,6 +32,7 @@ export default class Player {
         playerId: this._id,
         x: this.position === "left" ? 25 : ctx.canvas.width - 25,
         y: 60 * index + 50,
+        tokenId: `${this._id}-${index + 1}`
       };
       const token = new DraggableToken(tokenData);
       this.tokens.push(token);
@@ -45,6 +46,10 @@ export default class Player {
 
   get playerTokens() {
     return this.tokens;
+  }
+
+  getTokenById(id){
+    return this.tokens.find(token => token.id === id);
   }
 
   giveChance() {

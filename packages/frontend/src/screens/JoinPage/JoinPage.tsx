@@ -1,5 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { useSocket } from "contexts/Socketio/SocketIoContext";
+import { socketio } from "utils/socket";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -9,7 +9,6 @@ import { setPlayer } from "store/reducers/playersSlice";
 function JoinPage() {
   const params = useParams();
   const dispatch = useDispatch();
-  const socketio = useSocket();
   const navigate = useNavigate();
 
   const [username, setUserName] = useState("");
