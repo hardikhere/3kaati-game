@@ -51,7 +51,13 @@ io.on("connection", (socket) => {
   socket.on('MOVE', (data) => {
     const { roomId } = data;
     io.in(roomId).emit("MOVED", data);
+  });
+
+  socket.on('WIN', (data) => {
+    const { roomId } = data;
+    io.in(roomId).emit("WON", data);
   })
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

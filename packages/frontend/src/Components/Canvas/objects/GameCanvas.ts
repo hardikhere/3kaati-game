@@ -201,6 +201,7 @@ class GameCanvas {
     token.row = playerData.row;
     token.column = playerData.col;
     store.dispatch(setToken(playerData));
+    this.checkIfAnyoneWon();
   }
 
   registerSocketEvents() {
