@@ -21,6 +21,7 @@ function Canvas() {
       win.play();
       timer = setTimeout(() => {
         setShowConfetti(false);
+        window.location.href = "/";
       }, 5000);
     }
     return () => {
