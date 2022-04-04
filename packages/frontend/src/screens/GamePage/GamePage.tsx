@@ -1,14 +1,26 @@
 import usePlayers from "hooks/usePlayers";
 import Canvas from "../../Components/Canvas";
-import { WhosChance } from "./gamePageStyle";
+import { StyledWinnerAnouncement, WhosChance } from "./gamePageStyle";
 
 function GamePage() {
-  const { currentChance } = usePlayers();
+  const { currentChance, winner } = usePlayers();
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
       <WhosChance>{currentChance?.userName}'s Turn</WhosChance>
       <Canvas />
+      {winner?.hasWon && (
+        <StyledWinnerAnouncement className="zoom-in">
+          {winner?.userName} Won!
+        </StyledWinnerAnouncement>
+      )}
     </div>
   );
 }
