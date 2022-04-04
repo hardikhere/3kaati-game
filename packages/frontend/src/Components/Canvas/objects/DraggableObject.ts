@@ -5,6 +5,7 @@ import redToken from "assets/token2.png";
 import store from "store";
 import { setToken } from "store/reducers/tokensSlice";
 
+const placeAudio = require('assets/placeAudio.wav');
 class DraggableToken {
   color: String;
   tokenImg = new Image();
@@ -94,6 +95,8 @@ class DraggableToken {
     const tokenDetails = { x, y, row, col, playerId, tokenId }
     store.dispatch(setToken(tokenDetails));
     socketio.emit("MOVE", { ...tokenDetails, roomId });
+    const audio = new Audio(placeAudio);
+    audio.play();
   }
 
   drawToken() {

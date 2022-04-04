@@ -5,7 +5,10 @@ export const playerSlice = createSlice({
   initialState: {} as playersState,
   reducers: {
     setPlayer: (state, action) => {
-      state[action.payload.playerId] = { ...action.payload, hasChance: false };
+      state[action.payload.playerId] = { ...action.payload, hasChance: false, hasWon: false };
+    },
+    setWinner: (state, action) => {
+      state[action.payload].hasWon = true;
     },
     changeTurn: (state, action) => {
       Object.values(state).forEach(player => {
@@ -16,7 +19,7 @@ export const playerSlice = createSlice({
   },
 });
 
-export const { setPlayer, changeTurn } = playerSlice.actions;
+export const { setPlayer, changeTurn, setWinner } = playerSlice.actions;
 export interface IUser {
   userName: string;
   roomId: string;
@@ -25,6 +28,7 @@ export interface IUser {
   color: "red" | "blue";
   position: "left" | "right";
   hasChance: boolean;
+  hasWon: boolean;
 }
 
 type playersState = Record<string, IUser>;

@@ -1,13 +1,32 @@
 import usePlayers from "hooks/usePlayers";
 import { socketio } from "utils/socket";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyledCanvas } from "./canvas.styled";
 import GameCanvas from "./objects/GameCanvas";
 import Player from "./objects/Player";
+import Confetti from "react-confetti";
+
+const winAudio = require("assets/winAudio.wav");
 
 function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { playersArr } = usePlayers();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { playersArr, winner } = usePlayers();
+
+  useEffect(() => {
+    let timer;
+    if (winner) {
+      setShowConfetti(true);
+      const win = new Audio(winAudio);
+      win.play();
+      timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [winner]);
 
   useEffect(() => {
     socketio?.on("connect", () => {
@@ -34,7 +53,12 @@ function Canvas() {
     socketio?.open();
   }, [canvasRef]);
 
-  return <StyledCanvas ref={canvasRef} height={600} width={1000} />;
+  return (
+    <>
+      <StyledCanvas ref={canvasRef} height={600} width={1000} />
+      {showConfetti && <Confetti />}
+    </>
+  );
 }
 
 export default Canvas;

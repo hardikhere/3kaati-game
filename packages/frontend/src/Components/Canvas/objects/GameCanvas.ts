@@ -1,5 +1,6 @@
 import boardImg from "assets/board.jpg";
 import store from "store";
+import { setWinner } from "store/reducers/playersSlice";
 import { setToken } from "store/reducers/tokensSlice";
 import { cursorInRect, getMouseCoords, getOffsetCoords } from "utils/common";
 import { socketio } from "utils/socket";
@@ -30,41 +31,43 @@ class GameCanvas {
     };
     this.boardImg.src = boardImg;
     GameCanvas.isInitializedOnce = true;
-    this.subscribeMethodsToRedux();
     this.registerSocketEvents();
   }
 
-  subscribeMethodsToRedux() {
-    store.subscribe(this.checkIfAnyoneWon.bind(this));
-  }
+
 
   checkIfAnyoneWon() {
-    // TODO: change this logic
-    if (this.currentTeam === 1) {
-      const state = Object.values(store.getState().tokens);
-      const playerAtokens = Object.values(state[0]);
-      if (playerAtokens.length < 3) return;
+    console.log("RUNNINGGGGG");
+    // find id of player which has current chance/turn
+    const players = store.getState().players;
+    let playerId;
+    Object.values(players).forEach(playerDetails => {
+      if (playerDetails.hasChance) playerId = playerDetails.playerId;
+    })
+    const currentPlayerTokens = store.getState().tokens?.[playerId] || {};
+    const playerTokensArr = Object.values(currentPlayerTokens);
+    if (playerTokensArr.length < 3) return;
 
-      const { x: x1, y: y1, row } = playerAtokens[0];
-      if (row === null) return;
-      const { x: x2, y: y2 } = playerAtokens[1];
-      const { x: x3, y: y3 } = playerAtokens[2];
-      const slopeA = slope(x1, y1, x2, y2);
-      const slopeB = slope(x2, y2, x3, y3);
-      if (slopeA === slopeB) {
-        // TODO: handle win here
-        console.log("player A won");
-
-        this.winningLinePath = {
-          till: {
-            x: x3,
-            y: y3,
-          },
-          from: { x: x1, y: y1 },
-        };
-        this.isDrawingWinningLine = true;
-      }
+    const { x: x1, y: y1, row } = playerTokensArr[0];
+    if (row === null) return;
+    const { x: x2, y: y2 } = playerTokensArr[1];
+    const { x: x3, y: y3 } = playerTokensArr[2];
+    const slopeA = slope(x1, y1, x2, y2);
+    const slopeB = slope(x2, y2, x3, y3);
+    if (slopeA === slopeB) {
+      // TODO: handle win here
+      console.log(`player ${playerId} won`);
+      store.dispatch(setWinner(playerId));
+      this.winningLinePath = {
+        till: {
+          x: x3,
+          y: y3,
+        },
+        from: { x: x1, y: y1 },
+      };
+      this.isDrawingWinningLine = true;
     }
+
   }
 
   drawWinningLine(_) {
@@ -151,7 +154,6 @@ class GameCanvas {
     canvas.addEventListener("mousedown", (e) => {
       let mouse = getMouseCoords(canvas, e);
       tokens.forEach((token) => {
-        console.log("\n\n🚀 ~ file: GameCanvas.ts ~ line 155 ~ GameCanvas ~ tokens.forEach ~ token.isMine", token.isMine)
         if (!token.hasChance || !token.isMine) return;
         if (
           cursorInRect(
@@ -178,6 +180,7 @@ class GameCanvas {
           // TODO: add checks if token can be placed or not
           if (token.isTokenPlacable) token.placeToken();
           else token.takeBackToPrevPos();
+          this.checkIfAnyoneWon();
         }
         token.selected = false;
       });
@@ -202,7 +205,6 @@ class GameCanvas {
 
   registerSocketEvents() {
     socketio.on("MOVED", data => {
-      console.log("\n\n🚀 ~ file: GameCanvas.ts ~ line 200 ~ GameCanvas ~ registerSocketEvents ~ data", data)
       this.movePlayer(data);
       const player = this.players.find(p => p._id !== data.playerId);
       player?.giveChance();

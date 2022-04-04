@@ -14,6 +14,7 @@ export default function usePlayers() {
         })
     }, [playersObj])
     const me = playersArr.find(player => player.isMe);
+    const winner = playersArr.find(player => player.hasWon);
 
-    return { playersArr, me, currentChance };
+    return { playersArr, me, currentChance, winner };
 }
