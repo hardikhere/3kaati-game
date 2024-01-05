@@ -2,7 +2,6 @@ import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
-import { nanoid } from "nanoid";
 
 const app = express().use(cors);
 const server = http.createServer(app);
@@ -48,15 +47,15 @@ io.on("connection", (socket) => {
     io.in(roomId).emit("JOINED_ROOM", data);
   });
 
-  socket.on('MOVE', (data) => {
+  socket.on("MOVE", (data) => {
     const { roomId } = data;
     io.in(roomId).emit("MOVED", data);
   });
 
-  socket.on('WIN', (data) => {
+  socket.on("WIN", (data) => {
     const { roomId } = data;
     io.in(roomId).emit("WON", data);
-  })
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");

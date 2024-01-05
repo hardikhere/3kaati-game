@@ -5,16 +5,18 @@
   "license": "MIT",
   "dependencies": {
     "@socket.io/redis-adapter": "^7.1.0",
+    "concurrently": "^7.0.0",
     "cors": "^2.8.5",
     "express": "4.17.1",
+    "memfs": "^4.6.0",
     "nanoid": "^3.2.0",
     "redis": "^4.0.2",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.7.3"
   },
   "scripts": {
     "watch": "tsc --watch",
     "dev": "npx kill-port 8000 && nodemon build/src/index.js && yarn watch",
-    "start": "yarn build && node build/src/index.js",
+    "start": "npm build && node build/src/index.js",
     "build": "tsc --project ./"
   },
   "devDependencies": {
