@@ -62,6 +62,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(65080, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 });
