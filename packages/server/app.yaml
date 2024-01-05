@@ -2,4 +2,4 @@ runtime: nodejs18
 service: default
 handlers:
 - url: /.*
-  script: auto
+  script: yarn start

@@ -16,7 +16,7 @@
   "scripts": {
     "watch": "tsc --watch",
     "dev": "npx kill-port 8000 && nodemon build/src/index.js && yarn watch",
-    "start": "npm build && node build/src/index.js",
+    "start": "yarn build && node build/src/index.js",
     "build": "tsc --project ./"
   },
   "devDependencies": {
