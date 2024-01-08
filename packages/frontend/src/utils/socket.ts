@@ -1,7 +1,7 @@
 import io from "socket.io-client";
-import { getLink } from "utils/common";
-export const socketio = io(getLink(), {
-    upgrade: false,
-    autoConnect: false,
-    transports: ["websocket"],
+
+export const socketio = io("http://localhost:8000", {
+  upgrade: false,
+  autoConnect: false,
+  transports: ["websocket"],
 });

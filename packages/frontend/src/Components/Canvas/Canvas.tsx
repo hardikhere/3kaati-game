@@ -56,7 +56,7 @@ function Canvas() {
 
   return (
     <>
-      <StyledCanvas ref={canvasRef} height={600} width={1000} />
+      <StyledCanvas as={"canvas"} ref={canvasRef} height={600} width={1000} />
       {showConfetti && <Confetti />}
     </>
   );

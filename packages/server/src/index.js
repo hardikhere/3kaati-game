@@ -1,23 +1,23 @@
-import express from "express";
-import { Server } from "socket.io";
-import http from "http";
-import cors from "cors";
+const express = require("express");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
-const app = express().use(cors);
-const server = http.createServer(app);
-const PORT = process.env.PORT || 8000;
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
+const app = express();
+const cors = require("cors")
+app.use(cors())
 
-// TODO: replace it with redis
-// string --> users[]
 const activeRooms = new Map();
 
+const httpServer = createServer(app);
+// the io variable can be used to do all the necessary things regarding Socket
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://127.0.0.1:3000"
+  }
+})
+
 io.on("connection", (socket) => {
+  console.log(`User Connected ${socket.id}`)
   console.log("a user connected", socket.id);
   socket.on("CREATE_ROOM", (data) => {
     console.log("creacted room");
@@ -62,6 +62,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(65080, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
-});
+httpServer.listen(8000, () => {
+  console.log("the server is running on port 8800")
+})

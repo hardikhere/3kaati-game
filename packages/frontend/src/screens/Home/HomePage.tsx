@@ -4,19 +4,22 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setPlayer } from "store/reducers/playersSlice";
+import {
+  HomeButton,
+  HomeContainer,
+  HomeForm,
+  HomeInput,
+} from "screens/Home/homeStyle";
 
 function HomePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
-  const [roomId, setRoomId] = useState("");
+
   const handleNameChange = (e) => {
     setUserName(e.target.value);
   };
 
-  const handleRoomNameChange = (e) => {
-    setRoomId(e.target.value);
-  };
   const createRoom = () => {
     socketio?.open();
     const newRoomId = nanoid(10);
@@ -33,42 +36,23 @@ function HomePage() {
     navigate(`/waiting/${newRoomId}`);
   };
 
-  const joinRoom = () => {
-    socketio?.emit("JOIN_ROOM");
-  };
   return (
-    <div>
-      <form>
+    <HomeContainer>
+      <HomeForm>
         <h3>Create room</h3>
         <label htmlFor="userName">Your nick name</label>
-        <input
+        <HomeInput
+          as={"input"}
           type="text"
           id="userName"
           onChange={handleNameChange}
           value={userName}
         />
-        <button onClick={createRoom}>Submit</button>
-      </form>
-
-      <form>
-        <h3>Join room</h3>
-        <label htmlFor="userName">Your nick name</label>
-        <input
-          type="text"
-          id="userName"
-          onChange={handleNameChange}
-          value={userName}
-        />
-        <label htmlFor="roomid"></label>
-        <input
-          type="text"
-          id="roomid"
-          onChange={handleRoomNameChange}
-          value={roomId}
-        />
-        <button onClick={joinRoom}>Submit</button>
-      </form>
-    </div>
+        <HomeButton as="button" onClick={createRoom}>
+          Submit
+        </HomeButton>
+      </HomeForm>
+    </HomeContainer>
   );
 }
 

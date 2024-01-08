@@ -5,6 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { setPlayer } from "store/reducers/playersSlice";
+import {
+  JoinButton,
+  JoinContainer,
+  JoinForm,
+  JoinInput,
+} from "screens/JoinPage/joinStyles";
 
 function JoinPage() {
   const params = useParams();
@@ -49,18 +55,21 @@ function JoinPage() {
   }, []);
 
   return (
-    <div>
-      <div>
+    <JoinContainer>
+      <JoinForm>
         <label htmlFor="userName">Your unique User name</label>
-        <input
+        <JoinInput
+          as={"input"}
           value={userName}
           type="text"
           id="userName"
           onChange={handleChange}
         />
-        <button onClick={joinRoom}>Join Room</button>
-      </div>
-    </div>
+        <JoinButton as="button" onClick={joinRoom}>
+          Join Room
+        </JoinButton>
+      </JoinForm>
+    </JoinContainer>
   );
 }
 

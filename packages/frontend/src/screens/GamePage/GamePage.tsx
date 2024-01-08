@@ -17,7 +17,7 @@ function GamePage() {
       <WhosChance>{currentChance?.userName}'s Turn</WhosChance>
       <Canvas />
       {winner?.hasWon && (
-        <StyledWinnerAnouncement className="zoom-in">
+        <StyledWinnerAnouncement as={"div"} className="zoom-in">
           {winner?.userName} Won!
         </StyledWinnerAnouncement>
       )}

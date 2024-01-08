@@ -16,3 +16,7 @@
   animation: zoom-in 1s;
   animation-iteration-count: 1;
 }
+body {
+  font-family: "Joti One", cursive;
+  margin: 0px;
+}

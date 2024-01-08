@@ -5,7 +5,7 @@ import redToken from "assets/token2.png";
 import store from "store";
 import { setToken } from "store/reducers/tokensSlice";
 
-const placeAudio = require('assets/placeAudio.wav');
+const placeAudio = require("assets/placeAudio.wav");
 class DraggableToken {
   color: String;
   tokenImg = new Image();
@@ -19,8 +19,8 @@ class DraggableToken {
   prevPos: IPrevPos = { row: null, col: null, x: null, y: null };
   active = false;
   selected = false;
-  readonly id: string;
-  readonly playerId: string;
+  id: string;
+  playerId: string;
   nextDropPos = { x: 0, y: 0 };
   constructor(tokenInitOptions: ITokenInitOptions) {
     const { x, y, color, playerId, ctx, tokenId } = tokenInitOptions;
@@ -92,7 +92,7 @@ class DraggableToken {
     this.column = col;
     this.prevPos = { row, col, x, y };
     const roomId = store.getState().players[playerId].roomId;
-    const tokenDetails = { x, y, row, col, playerId, tokenId }
+    const tokenDetails = { x, y, row, col, playerId, tokenId };
     store.dispatch(setToken(tokenDetails));
     socketio.emit("MOVE", { ...tokenDetails, roomId });
     const audio = new Audio(placeAudio);

@@ -26,6 +26,11 @@ class GameCanvas {
     if (!ref) throw new Error("ref can not be falsy");
     this.ctx = ref.getContext("2d");
     if (!this.ctx) throw new Error("unable to get 2D context ");
+    this.isDrawingWinningLine = false;
+    this.winningLinePath = {
+      till: { x: 0, y: 0 },
+      from: { x: 0, y: 0 },
+    };
     this.boardImg.onload = () => {
       this.renderBoardImage();
     };
@@ -34,16 +39,14 @@ class GameCanvas {
     this.registerSocketEvents();
   }
 
-
-
   checkIfAnyoneWon() {
     console.log("RUNNINGGGGG");
     // find id of player which has current chance/turn
     const players = store.getState().players;
     let playerId;
-    Object.values(players).forEach(playerDetails => {
+    Object.values(players).forEach((playerDetails) => {
       if (playerDetails.hasChance) playerId = playerDetails.playerId;
-    })
+    });
     const currentPlayerTokens = store.getState().tokens?.[playerId] || {};
     const playerTokensArr = Object.values(currentPlayerTokens);
     if (playerTokensArr.length < 3) return;
@@ -55,7 +58,6 @@ class GameCanvas {
     const slopeA = slope(x1, y1, x2, y2);
     const slopeB = slope(x2, y2, x3, y3);
     if (slopeA === slopeB) {
-      // TODO: handle win here
       console.log(`player ${playerId} won`);
       store.dispatch(setWinner(playerId));
       this.winningLinePath = {
@@ -67,7 +69,6 @@ class GameCanvas {
       };
       this.isDrawingWinningLine = true;
     }
-
   }
 
   drawWinningLine(_) {
@@ -192,7 +193,7 @@ class GameCanvas {
   }
 
   movePlayer(playerData) {
-    const player = this.players.find(p => p._id === playerData.playerId);
+    const player = this.players.find((p) => p._id === playerData.playerId);
     if (!player) throw new Error("player not found");
     const token = player.getTokenById(playerData.tokenId);
     if (!token) throw new Error("token not found");
@@ -205,11 +206,11 @@ class GameCanvas {
   }
 
   registerSocketEvents() {
-    socketio.on("MOVED", data => {
+    socketio.on("MOVED", (data) => {
       this.movePlayer(data);
-      const player = this.players.find(p => p._id !== data.playerId);
+      const player = this.players.find((p) => p._id !== data.playerId);
       player?.giveChance();
-    })
+    });
   }
 
   renderBoardImage() {

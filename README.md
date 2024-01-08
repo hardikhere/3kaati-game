@@ -13,9 +13,3 @@ You can't go like this.</br>
 You can just go one step left right up down.</br>
 ![enter image description here](https://i.ibb.co/GT5315Q/Screenshot-from-2022-04-04-19-49-03.png)
 
-# commands
-
-`yarn watch:server` to run watcher (sees any code change on server and build js output)</br>
-`yarn server` to run server</br>
-`yarn client` to run react app</br>
-`yarn start` to run both frontend and server in one go</br>
